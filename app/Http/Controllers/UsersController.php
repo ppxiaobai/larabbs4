@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    // 显示游客登录
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['show']]);
+    }
+
     // 个人页面
     public function show(User $user)
     {
@@ -19,13 +25,14 @@ class UsersController extends Controller
     // 编辑资料
     public function edit(User $user)
     {
-
+        $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
     // 保存修改
     public function update(UserRequest $request, ImageUploadHandler $uploader, User $user)
     {
+        $this->authorize('update', $user);
         $data = $request->all();
 
         if ($request->avatar) {
